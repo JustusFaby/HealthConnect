@@ -4,7 +4,7 @@ A modern medical appointment booking platform built with **React**, **TypeScript
 
 ![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-blue) ![Supabase](https://img.shields.io/badge/Supabase-Backend-green) ![Vite](https://img.shields.io/badge/Vite-7-purple) ![AWS EC2](https://img.shields.io/badge/Amazon_EC2-Hosting-orange)
 
-**🚀 Live Demo:** [http://54.226.148.209/](http://54.226.148.209/)
+**🚀 Live Demo:** [http://54.226.148.209:5173/](http://54.226.148.209:5173/)
 
 ---
 
