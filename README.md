@@ -2,7 +2,9 @@
 
 A modern medical appointment booking platform built with **React**, **TypeScript**, **Tailwind CSS**, and **Supabase**. Patients can browse doctors, book appointments, and chat — while doctors manage their availability and receive email notifications.
 
-![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-blue) ![Supabase](https://img.shields.io/badge/Supabase-Backend-green) ![Vite](https://img.shields.io/badge/Vite-7-purple)
+![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-blue) ![Supabase](https://img.shields.io/badge/Supabase-Backend-green) ![Vite](https://img.shields.io/badge/Vite-7-purple) ![AWS EC2](https://img.shields.io/badge/Amazon_EC2-Hosting-orange)
+
+**🚀 Live Demo:** [http://54.226.148.209/](http://54.226.148.209/)
 
 ---
 
@@ -25,11 +27,12 @@ A modern medical appointment booking platform built with **React**, **TypeScript
 ### 🔐 Admin
 - View dashboard with stats (doctors, patients, appointments)
 - Add or delete doctors and patients
-- Full user management with Supabase Auth cleanup
+- Full user management with Supabase Auth cleanup (RPC) avoiding zombie profiles
+- Handling of user re-registration: Users deleted by an admin can seamlessly re-register using their original credentials
 - Admin credentials: `admin@admin.com` / `admin123`
 
 ### 🌐 General
-- Google OAuth sign-in for patients
+- Google OAuth sign-in for both patients and doctors (caches role selection before redirect)
 - Role-based dashboards (Admin / Doctor / Patient)
 - Real-time toast notifications
 - Responsive design (mobile-friendly)
@@ -46,6 +49,7 @@ A modern medical appointment booking platform built with **React**, **TypeScript
 | Backend    | Supabase (Auth, Database, API)  |
 | Email      | EmailJS (REST API)              |
 | Icons      | Lucide React                    |
+| Hosting    | Amazon EC2                      |
 
 ---
 
@@ -214,7 +218,7 @@ const SUPABASE_ANON_KEY = '<your-anon-key>';
 4. Copy the **Client ID** and **Client Secret**
 5. In Supabase Dashboard → **Authentication → Providers → Google** → paste credentials and enable
 
-> **Note:** Google OAuth is available only for **patient** registration. Doctors must register via email/password to ensure their specialization is captured.
+> **Note:** Google OAuth supports both **patient and doctor** registration. Users select their desired role (and specialization, if applicable) prior to clicking the Google button. The application temporarily caches this selection and creates the proper profile upon successful return from Google.
 
 ---
 
