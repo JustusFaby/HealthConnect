@@ -17,7 +17,7 @@ export async function sendAppointmentEmail(params: {
   message: string;
 }) {
   try {
-    const response = await fetch('/emailjs-api/api/v1.0/email/send', {
+    const response = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
