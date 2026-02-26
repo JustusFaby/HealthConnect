@@ -25,6 +25,240 @@ export default function AuthContainer() {
 
   const [busy, setBusy] = useState(false);
 
+  // Modern full-page background and card, with all logic above
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800 px-4 py-12">
+      <div className="w-full max-w-2xl mx-auto">
+        {/* Logo and Title */}
+        <div className="mb-10 text-center">
+          <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-primary-400 to-primary-700 shadow-2xl border-4 border-white">
+            <span className="text-4xl font-extrabold text-white drop-shadow-lg">H</span>
+          </div>
+          <h1 className="text-5xl font-extrabold text-white tracking-tight drop-shadow-lg">HealthConnect</h1>
+          <p className="mt-3 text-lg text-primary-100 font-medium drop-shadow">Book appointments with top doctors</p>
+        </div>
+        {/* Card */}
+        <div className="overflow-hidden rounded-3xl bg-white/90 shadow-2xl ring-1 ring-gray-200 backdrop-blur-lg">
+          {/* Tabs */}
+          <div className="flex border-b border-gray-100 bg-gradient-to-r from-primary-50 to-white">
+            <button
+              onClick={() => setActiveTab('login')}
+              className={`flex-1 py-6 text-center text-lg font-bold transition-colors ${activeTab === 'login'
+                ? 'border-b-4 border-primary-500 text-primary-700 bg-white'
+                : 'text-gray-400 hover:text-primary-600 bg-gradient-to-r from-primary-50 to-white'
+              }`}
+            >
+              <LogIn className="mx-auto mb-1 h-5 w-5" />
+              Login
+            </button>
+            <button
+              onClick={() => setActiveTab('register')}
+              className={`flex-1 py-6 text-center text-lg font-bold transition-colors ${activeTab === 'register'
+                ? 'border-b-4 border-primary-500 text-primary-700 bg-white'
+                : 'text-gray-400 hover:text-primary-600 bg-gradient-to-r from-primary-50 to-white'
+              }`}
+            >
+              <UserPlus className="mx-auto mb-1 h-5 w-5" />
+              Register
+            </button>
+          </div>
+          {/* Forms */}
+          <div className="p-12 md:p-16">
+            {activeTab === 'login' ? (
+              <div className="space-y-7">
+                <button
+                  onClick={handleGoogle}
+                  disabled={busy}
+                  className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white py-4 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition disabled:opacity-50"
+                >
+                  <GoogleIcon />
+                  Continue with Google
+                </button>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-3 text-gray-400">
+                      or sign in with email
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-base font-medium text-gray-700">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="email"
+                      value={loginEmail}
+                      onChange={(e) => setLoginEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="w-full rounded-xl border border-gray-200 py-4 pl-12 pr-4 text-base focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-base font-medium text-gray-700">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="password"
+                      value={loginPassword}
+                      onChange={(e) => setLoginPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
+                      className="w-full rounded-xl border border-gray-200 py-4 pl-12 pr-4 text-base focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={handleLogin}
+                  disabled={busy}
+                  className="w-full rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 py-4 text-base font-semibold text-white shadow-md hover:shadow-lg hover:from-primary-600 hover:to-primary-700 transition-all disabled:opacity-50"
+                >
+                  {busy ? 'Signing in…' : 'Sign In'}
+                </button>
+                <p className="text-center text-xs text-gray-400">
+                  Demo: admin@admin.com / admin123
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-7">
+                {regRole === 'patient' && (
+                  <>
+                    <button
+                      onClick={handleGoogle}
+                      disabled={busy}
+                      className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white py-4 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition disabled:opacity-50"
+                    >
+                      <GoogleIcon />
+                      Continue with Google
+                    </button>
+                    <div className="relative">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-200" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-white px-3 text-gray-400">
+                          or register with email
+                        </span>
+                      </div>
+                    </div>
+                  </>
+                )}
+                <div>
+                  <label className="mb-2 block text-base font-medium text-gray-700">
+                    I am a
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setRegRole('patient')}
+                      className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-base font-medium transition ${regRole === 'patient'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                        : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                      }`}
+                    >
+                      <Heart className="h-5 w-5" /> Patient
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRegRole('doctor')}
+                      className={`flex items-center justify-center gap-2 rounded-xl border-2 px-4 py-3 text-base font-medium transition ${regRole === 'doctor'
+                        ? 'border-primary-500 bg-primary-50 text-primary-700'
+                        : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                      }`}
+                    >
+                      <Stethoscope className="h-5 w-5" /> Doctor
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-base font-medium text-gray-700">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      value={regName}
+                      onChange={(e) => setRegName(e.target.value)}
+                      placeholder="Enter your full name"
+                      className="w-full rounded-xl border border-gray-200 py-4 pl-12 pr-4 text-base focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+                {regRole === 'doctor' && (
+                  <div>
+                    <label className="mb-1.5 block text-base font-medium text-gray-700">
+                      Specialization
+                    </label>
+                    <div className="relative">
+                      <Stethoscope className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        value={regSubject}
+                        onChange={(e) => setRegSubject(e.target.value)}
+                        placeholder="e.g. Cardiology, Dermatology"
+                        className="w-full rounded-xl border border-gray-200 py-4 pl-12 pr-4 text-base focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition"
+                      />
+                    </div>
+                  </div>
+                )}
+                <div>
+                  <label className="mb-1.5 block text-base font-medium text-gray-700">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="email"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="w-full rounded-xl border border-gray-200 py-4 pl-12 pr-4 text-base focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-base font-medium text-gray-700">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="password"
+                      value={regPassword}
+                      onChange={(e) => setRegPassword(e.target.value)}
+                      placeholder="Min 6 characters"
+                      onKeyDown={(e) => e.key === 'Enter' && handleRegister()}
+                      className="w-full rounded-xl border border-gray-200 py-4 pl-12 pr-4 text-base focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition"
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={handleRegister}
+                  disabled={busy}
+                  className="w-full rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 py-4 text-base font-semibold text-white shadow-md hover:shadow-lg hover:from-primary-600 hover:to-primary-700 transition-all disabled:opacity-50"
+                >
+                  {busy ? 'Registering…' : `Register as ${regRole === 'doctor' ? 'Doctor' : 'Patient'}`}
+                </button>
+                <p className="text-center text-xs text-gray-400">
+                  A verification email will be sent to confirm your account
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
   const handleLogin = async () => {
     if (!loginEmail || !loginPassword) {
       showNotification('Please enter both email and password', 'error');
