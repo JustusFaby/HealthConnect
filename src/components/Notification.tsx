@@ -9,8 +9,8 @@ export default function Notification() {
     <div
       className={`fixed top-6 right-6 z-50 flex items-center gap-3 rounded-xl px-5 py-4 text-white shadow-lg animate-in slide-in-from-top-2 transition-all duration-300 ${
         notification.type === 'success'
-          ? 'bg-gradient-to-r from-emerald-500 to-emerald-600'
-          : 'bg-gradient-to-r from-red-500 to-red-600'
+          ? 'bg-teal-600'
+          : 'bg-red-600'
       }`}
     >
       {notification.type === 'success' ? (

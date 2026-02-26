@@ -4,31 +4,32 @@ import AuthContainer from './components/AuthContainer';
 import AdminDashboard from './components/AdminDashboard';
 import DoctorDashboard from './components/DoctorDashboard';
 import PatientDashboard from './components/PatientDashboard';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Activity } from 'lucide-react';
 
 function AppContent() {
   const { currentRole, loading } = useApp();
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800">
-        <Loader2 className="h-10 w-10 animate-spin text-white" />
+      <div className="flex min-h-screen items-center justify-center bg-slate-900">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center">
+            <Activity className="w-7 h-7 text-white" />
+          </div>
+          <Loader2 className="h-6 w-6 animate-spin text-teal-400" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-50 to-primary-50">
+    <div className="min-h-screen bg-slate-50">
       <Notification />
 
-      {!currentRole && (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800 px-4 py-12">
-          <AuthContainer />
-        </div>
-      )}
+      {!currentRole && <AuthContainer />}
 
       {currentRole && (
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="min-h-screen">
           {currentRole === 'admin' && <AdminDashboard />}
           {currentRole === 'doctor' && <DoctorDashboard />}
           {currentRole === 'patient' && <PatientDashboard />}

@@ -112,23 +112,26 @@ export default function ChatPanel() {
   };
 
   return (
-    <div className="rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 overflow-hidden">
-      <div className="flex h-[500px]">
+    <div className="rounded-xl bg-white border border-slate-200 overflow-hidden">
+      <div className="flex h-[480px]">
         {/* Contact List */}
         <div
           className={`${
             selectedContact ? 'hidden md:flex' : 'flex'
-          } w-full md:w-80 flex-col border-r border-gray-100`}
+          } w-full md:w-72 flex-col border-r border-slate-200`}
         >
-          <div className="p-4 border-b border-gray-100">
-            <h3 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-              <MessageCircle className="h-5 w-5 text-primary-500" /> Messages
+          <div className="p-4 border-b border-slate-200">
+            <h3 className="flex items-center gap-2 text-base font-semibold text-slate-900">
+              <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center">
+                <MessageCircle className="h-4 w-4 text-teal-600" />
+              </div>
+              Messages
             </h3>
           </div>
 
           {contacts.length === 0 ? (
             <div className="flex-1 flex items-center justify-center p-6">
-              <p className="text-sm text-gray-400 text-center">
+              <p className="text-sm text-slate-400 text-center">
                 No conversations yet.
                 <br />
                 {currentRole === 'patient'
@@ -145,33 +148,33 @@ export default function ChatPanel() {
                   <li key={contact.id}>
                     <button
                       onClick={() => setSelectedContact(contact)}
-                      className={`w-full flex items-center gap-3 p-4 text-left hover:bg-gray-50 transition ${
-                        selectedContact?.id === contact.id ? 'bg-primary-50' : ''
+                      className={`w-full flex items-center gap-3 p-4 text-left hover:bg-slate-50 transition ${
+                        selectedContact?.id === contact.id ? 'bg-teal-50' : ''
                       }`}
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-600 font-bold text-sm">
+                      <div className="w-10 h-10 shrink-0 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-semibold text-sm">
                         {contact.name.charAt(0)}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <p className="font-semibold text-gray-800 text-sm truncate">
+                          <p className="font-medium text-slate-900 text-sm truncate">
                             {currentRole === 'patient' ? `Dr. ${contact.name}` : contact.name}
                           </p>
                           {lastMsg && (
-                            <span className="text-[10px] text-gray-400 shrink-0 ml-2">
+                            <span className="text-[10px] text-slate-400 shrink-0 ml-2">
                               {formatTime(lastMsg.createdAt)}
                             </span>
                           )}
                         </div>
                         <div className="flex items-center justify-between">
-                          <p className="text-xs text-gray-400 truncate">
+                          <p className="text-xs text-slate-400 truncate">
                             {contact.subject && (
-                              <span className="text-primary-500">{contact.subject} · </span>
+                              <span className="text-teal-600">{contact.subject} · </span>
                             )}
                             {lastMsg ? lastMsg.content : 'No messages yet'}
                           </p>
                           {unread > 0 && (
-                            <span className="ml-2 shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-primary-500 text-[10px] font-bold text-white">
+                            <span className="ml-2 shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-teal-500 text-[10px] font-bold text-white">
                               {unread}
                             </span>
                           )}
@@ -189,29 +192,29 @@ export default function ChatPanel() {
         <div
           className={`${
             selectedContact ? 'flex' : 'hidden md:flex'
-          } flex-1 flex-col`}
+          } flex-1 flex-col bg-slate-50`}
         >
           {selectedContact ? (
             <>
               {/* Chat Header */}
-              <div className="flex items-center gap-3 border-b border-gray-100 p-4">
+              <div className="flex items-center gap-3 border-b border-slate-200 p-4 bg-white">
                 <button
                   onClick={() => setSelectedContact(null)}
-                  className="md:hidden rounded-lg p-1 hover:bg-gray-100 transition"
+                  className="md:hidden rounded-lg p-1 hover:bg-slate-100 transition"
                 >
-                  <ArrowLeft className="h-5 w-5 text-gray-500" />
+                  <ArrowLeft className="h-5 w-5 text-slate-500" />
                 </button>
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 text-primary-600 font-bold text-sm">
+                <div className="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-semibold text-sm">
                   {selectedContact.name.charAt(0)}
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-800 text-sm">
+                  <p className="font-medium text-slate-900 text-sm">
                     {currentRole === 'patient'
                       ? `Dr. ${selectedContact.name}`
                       : selectedContact.name}
                   </p>
                   {selectedContact.subject && (
-                    <p className="text-xs text-gray-400">{selectedContact.subject}</p>
+                    <p className="text-xs text-slate-400">{selectedContact.subject}</p>
                   )}
                 </div>
               </div>
@@ -220,7 +223,7 @@ export default function ChatPanel() {
               <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {conversation.length === 0 ? (
                   <div className="flex h-full items-center justify-center">
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-slate-400">
                       Start the conversation — say hello!
                     </p>
                   </div>
@@ -235,8 +238,8 @@ export default function ChatPanel() {
                         <div
                           className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
                             isOwn
-                              ? 'bg-primary-500 text-white rounded-br-md'
-                              : 'bg-gray-100 text-gray-800 rounded-bl-md'
+                              ? 'bg-teal-600 text-white rounded-br-md'
+                              : 'bg-white text-slate-800 rounded-bl-md border border-slate-200'
                           }`}
                         >
                           <p className="text-sm whitespace-pre-wrap break-words">
@@ -244,7 +247,7 @@ export default function ChatPanel() {
                           </p>
                           <p
                             className={`mt-1 text-[10px] ${
-                              isOwn ? 'text-primary-200' : 'text-gray-400'
+                              isOwn ? 'text-teal-200' : 'text-slate-400'
                             }`}
                           >
                             {formatTime(msg.createdAt)}
@@ -258,7 +261,7 @@ export default function ChatPanel() {
               </div>
 
               {/* Input */}
-              <div className="border-t border-gray-100 p-4">
+              <div className="border-t border-slate-200 p-4 bg-white">
                 <div className="flex items-end gap-2">
                   <textarea
                     value={newMessage}
@@ -266,12 +269,12 @@ export default function ChatPanel() {
                     onKeyDown={handleKeyDown}
                     placeholder="Type a message…"
                     rows={1}
-                    className="flex-1 resize-none rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-100 focus:outline-none transition"
+                    className="flex-1 resize-none rounded-lg border border-slate-200 px-4 py-2.5 text-sm placeholder:text-slate-400 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none transition"
                   />
                   <button
                     onClick={handleSend}
                     disabled={sending || !newMessage.trim()}
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-500 text-white hover:bg-primary-600 transition disabled:opacity-40"
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-teal-600 text-white hover:bg-teal-700 transition disabled:opacity-40"
                   >
                     <Send className="h-4 w-4" />
                   </button>
@@ -281,8 +284,8 @@ export default function ChatPanel() {
           ) : (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <MessageCircle className="mx-auto h-12 w-12 text-gray-300" />
-                <p className="mt-3 text-gray-400 text-sm">
+                <MessageCircle className="mx-auto h-12 w-12 text-slate-300" />
+                <p className="mt-3 text-slate-400 text-sm">
                   Select a conversation to start messaging
                 </p>
               </div>
