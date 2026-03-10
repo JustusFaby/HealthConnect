@@ -1,8 +1,8 @@
 # HealthConnect — Medical Appointment Booking System
 
-A modern medical appointment booking platform built with **React**, **TypeScript**, **Tailwind CSS**, and **Supabase**. Patients can browse doctors, book appointments, and chat — while doctors manage their availability and receive email notifications.
+A modern medical appointment booking platform built with **React**, **TypeScript**, **Tailwind CSS**, and **Firebase**. Patients can browse doctors, book appointments, and chat — while doctors manage their availability and receive email notifications.
 
-![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-blue) ![Supabase](https://img.shields.io/badge/Supabase-Backend-green) ![Vite](https://img.shields.io/badge/Vite-7-purple) ![AWS EC2](https://img.shields.io/badge/Amazon_EC2-Hosting-orange)
+![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-blue) ![Firebase](https://img.shields.io/badge/Firebase-Backend-orange) ![Vite](https://img.shields.io/badge/Vite-7-purple) ![AWS EC2](https://img.shields.io/badge/Amazon_EC2-Hosting-orange)
 
 **🚀 Live Demo:** [http://54.226.148.209:5173/](http://54.226.148.209:5173/)
 
@@ -27,7 +27,7 @@ A modern medical appointment booking platform built with **React**, **TypeScript
 ### 🔐 Admin
 - View dashboard with stats (doctors, patients, appointments)
 - Add or delete doctors and patients
-- Full user management with Supabase Auth cleanup (RPC) avoiding zombie profiles
+- Full user management with Firebase Auth cleanup avoiding zombie profiles
 - Handling of user re-registration: Users deleted by an admin can seamlessly re-register using their original credentials
 - Admin credentials: `admin@admin.com` / `admin123`
 
@@ -46,7 +46,7 @@ A modern medical appointment booking platform built with **React**, **TypeScript
 |------------|---------------------------------|
 | Frontend   | React 19, TypeScript, Vite 7    |
 | Styling    | Tailwind CSS v4                 |
-| Backend    | Supabase (Auth, Database, API)  |
+| Backend    | Firebase (Auth, Firestore, Functions, API) |
 | Email      | EmailJS (REST API)              |
 | Icons      | Lucide React                    |
 | Hosting    | Amazon EC2                      |
@@ -57,7 +57,7 @@ A modern medical appointment booking platform built with **React**, **TypeScript
 
 ### Prerequisites
 - Node.js 18+
-- A [Supabase](https://supabase.com) account (free tier works)
+- A [Firebase](https://firebase.google.com/) account (free tier works)
 - An [EmailJS](https://www.emailjs.com) account (free — 200 emails/month)
 
 ### Installation
@@ -73,112 +73,48 @@ The app will be available at `http://localhost:5173/`.
 
 ---
 
-## 🗄 Supabase Setup
+## 🗄 Firebase Setup
 
-### 1. Create Tables
+### 1. Create a Firebase Project
 
-Run the following SQL in your Supabase **SQL Editor**:
+- Go to the [Firebase Console](https://console.firebase.google.com/) and create a new project.
+- Add a web app to your project and copy the Firebase config (apiKey, authDomain, etc.).
+- Enable **Authentication** providers (Email/Password, Google, etc.) under **Authentication → Sign-in method**.
+- Set up Firestore Database under **Firestore Database → Create database**.
 
-```sql
--- Profiles
-CREATE TABLE IF NOT EXISTS profiles (
-  id UUID PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  username TEXT,
-  role TEXT NOT NULL CHECK (role IN ('admin', 'doctor', 'patient')),
-  subject TEXT,
-  status TEXT DEFAULT 'approved' CHECK (status IN ('approved', 'pending')),
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+### 2. Firestore Data Structure
 
--- Slots
-CREATE TABLE IF NOT EXISTS slots (
-  id TEXT PRIMARY KEY,
-  doctor_id TEXT NOT NULL,
-  date TEXT NOT NULL,
-  time TEXT NOT NULL,
-  duration INT NOT NULL,
-  is_booked BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+Design collections similar to Supabase tables, e.g.:
+- `profiles` (users, doctors, admins)
+- `slots` (doctor availability slots)
+- `appointments` (booked appointments)
+- `messages` (chat between patients and doctors)
 
--- Appointments
-CREATE TABLE IF NOT EXISTS appointments (
-  id TEXT PRIMARY KEY,
-  patient_id TEXT NOT NULL,
-  doctor_id TEXT NOT NULL,
-  slot_id TEXT NOT NULL,
-  patient_name TEXT NOT NULL,
-  doctor_name TEXT NOT NULL,
-  date TEXT NOT NULL,
-  time TEXT NOT NULL,
-  duration INT NOT NULL,
-  message TEXT,
-  status TEXT DEFAULT 'confirmed',
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+### 3. Configure Firebase in Your App
 
--- Messages
-CREATE TABLE IF NOT EXISTS messages (
-  id TEXT PRIMARY KEY,
-  sender_id TEXT NOT NULL,
-  sender_name TEXT NOT NULL,
-  sender_role TEXT NOT NULL,
-  receiver_id TEXT NOT NULL,
-  receiver_name TEXT NOT NULL,
-  content TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
-
-### 2. Enable User Deletion (for Admin)
-
-This function allows the admin to fully delete users (both profile and auth):
-
-```sql
-CREATE OR REPLACE FUNCTION delete_user_by_id(user_id uuid)
-RETURNS void
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = auth, public
-AS $$
-BEGIN
-  DELETE FROM auth.users WHERE id = user_id;
-END;
-$$;
-```
-
-### 3. Row Level Security
-
-```sql
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow all" ON profiles FOR ALL USING (true) WITH CHECK (true);
-
-ALTER TABLE slots ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow all" ON slots FOR ALL USING (true) WITH CHECK (true);
-
-ALTER TABLE appointments ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow all" ON appointments FOR ALL USING (true) WITH CHECK (true);
-
-ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow all" ON messages FOR ALL USING (true) WITH CHECK (true);
-```
-
-### 4. Create Admin Account
-
-Go to **Authentication → Users** in your Supabase dashboard and create a user:
-- Email: `admin@admin.com`
-- Password: `admin123`
-
-### 5. Update Configuration
-
-Update the Supabase URL and anon key in `src/lib/supabase.ts`:
+Update your Firebase config in `src/lib/firebase.ts`:
 
 ```typescript
-const SUPABASE_URL = 'https://<your-project-id>.supabase.co';
-const SUPABASE_ANON_KEY = '<your-anon-key>';
+// src/lib/firebase.ts
+import { initializeApp } from 'firebase/app';
+const firebaseConfig = {
+  apiKey: '<your-api-key>',
+  authDomain: '<your-auth-domain>',
+  projectId: '<your-project-id>',
+  storageBucket: '<your-storage-bucket>',
+  messagingSenderId: '<your-messaging-sender-id>',
+  appId: '<your-app-id>',
+};
+export const app = initializeApp(firebaseConfig);
 ```
+
+### 4. (Optional) Set Up Firebase Functions
+
+- Use Firebase Cloud Functions for backend logic if needed (e.g., removing users).
+
+### 5. (Optional) Row Security & Rules
+
+- Go to **Firestore Database → Rules** and set rules that match your security needs.
 
 ---
 
@@ -214,11 +150,11 @@ const SUPABASE_ANON_KEY = '<your-anon-key>';
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a project → **APIs & Services → Credentials → Create OAuth Client ID**
-3. Set **Authorized redirect URI** to: `https://<your-supabase-id>.supabase.co/auth/v1/callback`
+3. Set **Authorized redirect URI** as documented in your Firebase authentication provider settings
 4. Copy the **Client ID** and **Client Secret**
-5. In Supabase Dashboard → **Authentication → Providers → Google** → paste credentials and enable
+5. In Firebase Console → **Authentication → Sign-in method → Google** → paste credentials and enable
 
-> **Note:** Google OAuth supports both **patient and doctor** registration. Users select their desired role (and specialization, if applicable) prior to clicking the Google button. The application temporarily caches this selection and creates the proper profile upon successful return from Google.
+> **Note:** Google OAuth supports both **patient and doctor** registration. Users select their desired role (and specialization, if applicable) prior to clicking the Google button. The application temporarily caches this selection and creates the correct profile upon successful return from Google.
 
 ---
 
@@ -237,10 +173,10 @@ healthconnect/
 │   │   ├── PatientDashboard.tsx  # Patient panel (browse, book)
 │   │   └── StatCard.tsx          # Dashboard stat card
 │   ├── context/
-│   │   └── AppContext.tsx        # Global state & Supabase logic
+│   │   └── AppContext.tsx        # Global state & Firebase logic
 │   ├── lib/
 │   │   ├── emailjs.ts           # Email notification helper
-│   │   └── supabase.ts          # Supabase client config
+│   │   └── firebase.ts          # Firebase client config
 │   ├── types.ts                 # TypeScript interfaces
 │   ├── App.tsx                  # Root component with role routing
 │   ├── main.tsx                 # Entry point
@@ -264,18 +200,18 @@ healthconnect/
        │                    │                    │
        ▼                    ▼                    ▼
 ┌──────────────────────────────────────────────────────┐
-│                  AppContext (State)                    │
-│  • Auth (login, register, Google OAuth)               │
-│  • CRUD (doctors, patients, slots, appointments)      │
-│  • Messaging (doctor ↔ patient chat)                  │
+│                  AppContext (State)                  │
+│  • Auth (login, register, Google OAuth)              │
+│  • CRUD (doctors, patients, slots, appointments)     │
+│  • Messaging (doctor ↔ patient chat)                 │
 └──────────────────────┬───────────────────────────────┘
                        │
                        ▼
 ┌──────────────────────────────────────────────────────┐
-│                    Supabase                           │
-│  • Auth (users, sessions, Google OAuth)               │
-│  • Database (profiles, slots, appointments, messages) │
-│  • RPC (delete_user_by_id)                            │
+│                    Firebase                          │
+│  • Auth (users, sessions, Google OAuth)              │
+│  • Firestore (profiles, slots, appointments, messages) │
+│  • Functions (remove users, custom logic)            │
 └──────────────────────────────────────────────────────┘
 ```
 
