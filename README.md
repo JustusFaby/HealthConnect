@@ -1,10 +1,10 @@
 # HealthConnect — Medical Appointment Booking System
 
-A modern medical appointment booking platform built with **React**, **TypeScript**, **Tailwind CSS**, and **Firebase**. Patients can browse doctors, book appointments, and chat — while doctors manage their availability and receive email notifications.
+A modern medical appointment booking platform built with **React**, **TypeScript**, **Tailwind CSS**, and **Firebase**. Patients can browse doctors, book appointments, and chat — while doctors manage slots and view bookings.
 
-![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-blue) ![Firebase](https://img.shields.io/badge/Firebase-Backend-orange) ![Vite](https://img.shields.io/badge/Vite-7-purple) ![AWS EC2](https://img.shields.io/badge/Amazon_EC2-Hosting-orange)
+![React](https://img.shields.io/badge/React-19-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-blue) ![Firebase](https://img.shields.io/badge/Firebase-Auth%2FFirestore-orange)
 
-**🚀 Live Demo:** [http://54.226.148.209:5173/](http://54.226.148.209:5173/)
+**🚀 Live Demo:** https://main.dppotj0ce2vob.amplifyapp.com/ (Deployed on **AWS Amplify**)
 
 ---
 
@@ -154,7 +154,7 @@ export const app = initializeApp(firebaseConfig);
 4. Copy the **Client ID** and **Client Secret**
 5. In Firebase Console → **Authentication → Sign-in method → Google** → paste credentials and enable
 
-> **Note:** Google OAuth supports both **patient and doctor** registration. Users select their desired role (and specialization, if applicable) prior to clicking the Google button. The application temporarily caches this selection and creates the correct profile upon successful return from Google.
+> **Note:** Google OAuth supports both **patient and doctor** registration. Users select their desired role (and specialization, if applicable) prior to clicking the Google button.
 
 ---
 
